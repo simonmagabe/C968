@@ -8,6 +8,8 @@ namespace WGU.SoftwareOne.Project.Model
     {
         public static BindingList<Part> AllParts = new BindingList<Part>();
         public static BindingList<Product> AllProducts = new BindingList<Product>();
+        
+        
 
         public static void InventoryManagementSystemData()
         {
@@ -132,40 +134,28 @@ namespace WGU.SoftwareOne.Project.Model
         {
             foreach (Part part in AllParts)
             {
-                if (part.GetType() == typeof(Outsourced))
-                {
-                    Outsourced modifiedPart = (Outsourced)part;
+                Outsourced modifiedPart = (Outsourced)part;
 
-                    if (modifiedPart.ID == selectedPartId)
-                    {
-                        modifiedPart.Name = updatedPart.Name;
-                        modifiedPart.InStock = updatedPart.InStock;
-                        modifiedPart.Price = updatedPart.Price;
-                        modifiedPart.Max = updatedPart.Max;
-                        modifiedPart.Min = updatedPart.Min;
-                        modifiedPart.CompanyName = updatedPart.CompanyName;
-                    }
+                if (modifiedPart.ID == selectedPartId)
+                {
+                    Inventory.AllParts.Remove(modifiedPart);
+                    Inventory.AddPart(updatedPart);
+                    break;
                 }
             }
         }
 
-        public static void UpdateInHousePart(int selectedPartId, InHouse updatedPart)
+        public static void UpdateInHousePart(int selectedPartId, Part updatedPart)
         {
             foreach (Part part in AllParts)
             {
-                if (part.GetType() == typeof(InHouse))
-                {
-                    InHouse modifiedPart = (InHouse)part;
+                Part modifiedPart = (Part)part;
 
-                    if (modifiedPart.ID == selectedPartId)
-                    {
-                        modifiedPart.Name = updatedPart.Name;
-                        modifiedPart.InStock = updatedPart.InStock;
-                        modifiedPart.Price = updatedPart.Price;
-                        modifiedPart.Max = updatedPart.Max;
-                        modifiedPart.Min = updatedPart.Min;
-                        modifiedPart.MachineID = updatedPart.MachineID;
-                    }
+                if (modifiedPart.ID == selectedPartId)
+                {
+                    Inventory.AllParts.Remove(modifiedPart);
+                    Inventory.AddPart(updatedPart);
+                    break;
                 }
             }
         }
