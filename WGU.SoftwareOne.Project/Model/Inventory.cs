@@ -134,7 +134,7 @@ namespace WGU.SoftwareOne.Project.Model
         {
             foreach (Part part in AllParts)
             {
-                Outsourced modifiedPart = (Outsourced)part;
+                Part modifiedPart = (Part)part;
 
                 if (modifiedPart.ID == selectedPartId)
                 {
@@ -155,6 +155,21 @@ namespace WGU.SoftwareOne.Project.Model
                 {
                     Inventory.AllParts.Remove(modifiedPart);
                     Inventory.AddPart(updatedPart);
+                    break;
+                }
+            }
+        }
+
+        public static void UpdatePart(int selectedPartId, Part updatedpart)
+        {
+            foreach (Part part in AllParts)
+            {
+                Part modifiedPart = (Part)part;
+
+                if (modifiedPart.ID == selectedPartId)
+                {
+                    Inventory.AllParts.Remove(modifiedPart);
+                    Inventory.AddPart(updatedpart);
                     break;
                 }
             }

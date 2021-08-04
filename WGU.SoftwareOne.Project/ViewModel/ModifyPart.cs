@@ -160,14 +160,14 @@ namespace WGU.SoftwareOne.Project.ViewModel
                 int partMachineId = int.Parse(ModifyPartDynamicTextBox.Text);
                 inHouseRadioBtn.Checked = true;
                 InHouse inHousePart = new InHouse(partId, partName, partInStock, partPrice, partMax, partMin, partMachineId);
-                Inventory.UpdateInHousePart(partId, inHousePart);
+                Inventory.UpdatePart(partId, inHousePart);
                 
             }
             else
             {
                 string partCompanyName = ModifyPartDynamicLbl.Text;
                 Outsourced outsourcedPart = new Outsourced(partId, partName, partInStock, partPrice, partMax, partMin, partCompanyName);
-                Inventory.UpdateOutsourcedPart(partId, outsourcedPart);
+                Inventory.UpdatePart(partId, outsourcedPart);
                 OutsourcedBtn.Checked = true;
             }
 
