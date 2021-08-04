@@ -184,13 +184,15 @@ namespace WGU.SoftwareOne.Project.ViewModel
                 int partMachineId = int.Parse(AddPartDynamicTextBox.Text);
 
                 InHouse inHousePart = new InHouse(partId, partName, partInStock, partPrice, partMax, partMin, partMachineId);
-                Inventory.AddPart(inHousePart);
+                int index = partId;
+                Inventory.AddPart(index, inHousePart);
             }
             else
             {
                 string partCompanyName = AddPartDynamicTextBox.Text;
                 Outsourced outsourcedPart = new Outsourced(partId, partName, partInStock, partPrice, partMax, partMin, partCompanyName);
-                Inventory.AddPart(outsourcedPart);
+                int index = partId;
+                Inventory.AddPart(index, outsourcedPart);
             }
 
             this.Close();

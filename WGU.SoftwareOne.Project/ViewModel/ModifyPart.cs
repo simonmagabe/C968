@@ -146,8 +146,6 @@ namespace WGU.SoftwareOne.Project.ViewModel
             string partName = ModifyPartNameTextBox.Text;
             int partInStock = int.Parse(ModifyPartInventoryTextBox.Text);
             decimal partPrice = decimal.Parse(ModifyPartPriceTextBox.Text);
-            RadioButton inHouseRadioBtn = ModifyPartInHousedBtn;
-            RadioButton OutsourcedBtn = ModifyPartOutsourcedBtn;
 
             if (partMax < partMin)
             {
@@ -158,17 +156,14 @@ namespace WGU.SoftwareOne.Project.ViewModel
             if (ModifyPartInHousedBtn.Checked)
             {
                 int partMachineId = int.Parse(ModifyPartDynamicTextBox.Text);
-                inHouseRadioBtn.Checked = true;
                 InHouse inHousePart = new InHouse(partId, partName, partInStock, partPrice, partMax, partMin, partMachineId);
                 Inventory.UpdatePart(partId, inHousePart);
-                
             }
             else
             {
-                string partCompanyName = ModifyPartDynamicLbl.Text;
+                string partCompanyName = ModifyPartDynamicTextBox.Text;
                 Outsourced outsourcedPart = new Outsourced(partId, partName, partInStock, partPrice, partMax, partMin, partCompanyName);
                 Inventory.UpdatePart(partId, outsourcedPart);
-                OutsourcedBtn.Checked = true;
             }
 
             Close();

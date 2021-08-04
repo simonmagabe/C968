@@ -8,9 +8,9 @@ namespace WGU.SoftwareOne.Project.Model
     {
         public static BindingList<Part> AllParts = new BindingList<Part>();
         public static BindingList<Product> AllProducts = new BindingList<Product>();
-        
-        
 
+
+        #region// Test Data Setup
         public static void InventoryManagementSystemData()
         {
             Part temporaryPart1 = new InHouse(1, "Temporary Part 1", 30, 20.00M, 12, 6, 1001);
@@ -38,6 +38,8 @@ namespace WGU.SoftwareOne.Project.Model
             temporaryProduct3.AssociatedParts.Add(temporaryPart3);
             temporaryProduct4.AssociatedParts.Add(temporaryPart4);
         }
+        #endregion
+
 
         #region // Helper Methods
         public static void AddProduct(Product product)
@@ -97,9 +99,9 @@ namespace WGU.SoftwareOne.Project.Model
             }
         }
 
-        public static void AddPart(Part part)
+        public static void AddPart(int index, Part part)
         {
-            AllParts.Add(part);
+            AllParts.Insert(index - 1, part);
         }
 
         public static bool DeletePart(Part part)
@@ -130,36 +132,6 @@ namespace WGU.SoftwareOne.Project.Model
             return voidPart;
         }
 
-        public static void UpdateOutsourcedPart(int selectedPartId, Outsourced updatedPart)
-        {
-            foreach (Part part in AllParts)
-            {
-                Part modifiedPart = (Part)part;
-
-                if (modifiedPart.ID == selectedPartId)
-                {
-                    Inventory.AllParts.Remove(modifiedPart);
-                    Inventory.AddPart(updatedPart);
-                    break;
-                }
-            }
-        }
-
-        public static void UpdateInHousePart(int selectedPartId, Part updatedPart)
-        {
-            foreach (Part part in AllParts)
-            {
-                Part modifiedPart = (Part)part;
-
-                if (modifiedPart.ID == selectedPartId)
-                {
-                    Inventory.AllParts.Remove(modifiedPart);
-                    Inventory.AddPart(updatedPart);
-                    break;
-                }
-            }
-        }
-
         public static void UpdatePart(int selectedPartId, Part updatedpart)
         {
             foreach (Part part in AllParts)
@@ -169,7 +141,7 @@ namespace WGU.SoftwareOne.Project.Model
                 if (modifiedPart.ID == selectedPartId)
                 {
                     Inventory.AllParts.Remove(modifiedPart);
-                    Inventory.AddPart(updatedpart);
+                    Inventory.AddPart(selectedPartId, updatedpart);
                     break;
                 }
             }
