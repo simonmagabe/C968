@@ -13,20 +13,20 @@ namespace WGU.SoftwareOne.Project.Model
         #region// Test Data Setup
         public static void InventoryManagementSystemData()
         {
-            Part temporaryPart1 = new InHouse(1, "Temporary Part 1", 30, 20.00M, 12, 6, 1001);
-            Part temporaryPart2 = new InHouse(2, "Temporary Part 2", 10, 5.00M, 4, 2, 1002);
-            Part temporaryPart3 = new Outsourced(3, "Temporary Part 3", 20, 120.00M, 12, 4, "RevLocal");
-            Part temporaryPart4 = new Outsourced(4, "Temporary Part 4", 70, 40.00M, 28, 24, "Tenwek");
+            Part temporaryPart1 = new InHouse(1, "Temporary Part 1", 10, 20.00M, 12, 6, 1001);
+            Part temporaryPart2 = new InHouse(2, "Temporary Part 2", 3, 5.00M, 4, 2, 1002);
+            Part temporaryPart3 = new Outsourced(3, "Temporary Part 3", 8, 120.00M, 12, 4, "RevLocal");
+            Part temporaryPart4 = new Outsourced(4, "Temporary Part 4", 26, 40.00M, 28, 24, "Tenwek");
 
             AllParts.Add(temporaryPart1);
             AllParts.Add(temporaryPart2);
             AllParts.Add(temporaryPart3);
             AllParts.Add(temporaryPart4);
 
-            Product temporaryProduct1 = new Product(1, "Temporary Product 1", 50, 12.00M, 7, 2);
-            Product temporaryProduct2 = new Product(2, "Temporary Product 2", 34, 18.00M, 30, 20);
+            Product temporaryProduct1 = new Product(1, "Temporary Product 1", 5, 12.00M, 7, 2);
+            Product temporaryProduct2 = new Product(2, "Temporary Product 2", 34, 18.00M, 40, 20);
             Product temporaryProduct3 = new Product(3, "Temporary Product 3", 20, 24.00M, 26, 16);
-            Product temporaryProduct4 = new Product(4, "Temporary Product 4", 18, 14.00M, 13, 7);
+            Product temporaryProduct4 = new Product(4, "Temporary Product 4", 18, 14.00M, 23, 7);
 
             AllProducts.Add(temporaryProduct1);
             AllProducts.Add(temporaryProduct2);

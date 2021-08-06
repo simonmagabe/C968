@@ -103,57 +103,81 @@ namespace WGU.SoftwareOne.Project.ViewModel
 
         private void ProductAddPartBtn_Click(object sender, EventArgs e)
         {
-            if (dataGridViewAddProductAllParts.CurrentRow != null)
+            try
             {
-                if (dataGridViewAddProductAllParts.CurrentRow.Selected)
+                if (dataGridViewAddProductAllParts.CurrentRow != null)
                 {
-                    Part associatedPart = (Part)dataGridViewAddProductAllParts.CurrentRow.DataBoundItem;
-                    associatedPartList.Add(associatedPart);
+                    if (dataGridViewAddProductAllParts.CurrentRow.Selected)
+                    {
+                        Part associatedPart = (Part)dataGridViewAddProductAllParts.CurrentRow.DataBoundItem;
+                        associatedPartList.Add(associatedPart);
+                    }
                 }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
 
         private void ProductAllPartsSearchBtn_Click(object sender, EventArgs e)
         {
-            int searchIdValue = int.Parse(ProductAllPartsSearchTxtBox.Text);
-            Part foundPart = Inventory.LookupPart(searchIdValue);
-
-            foreach (DataGridViewRow item in dataGridViewAddProductAllParts.Rows)
+            try
             {
-                Part part = (Part)item.DataBoundItem;
-                if (part.ID == foundPart.ID)
+                int searchIdValue = int.Parse(ProductAllPartsSearchTxtBox.Text);
+                Part foundPart = Inventory.LookupPart(searchIdValue);
+
+                foreach (DataGridViewRow item in dataGridViewAddProductAllParts.Rows)
                 {
-                    item.Selected = true;
-                    break;
+                    Part part = (Part)item.DataBoundItem;
+                    if (part.ID == foundPart.ID)
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                    else
+                    {
+                        item.Selected = false;
+                    }
                 }
-                else
-                {
-                    item.Selected = false;
-                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
 
         private void ProductDeleteAssociatedPartBtn_Click(object sender, EventArgs e)
         {
-            if (associatedPartList.Count > 0)
+            try
             {
-                if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                if (associatedPartList.Count > 0)
                 {
-                    associatedPartList.Remove((Part)dataGridViewAddProductPartsAssociated.CurrentRow.DataBoundItem);
-                    
-                    if (dataGridViewAddProductPartsAssociated.CurrentRow == null)
+                    if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
                     {
-                        ProductDeleteAssociatedPartBtn.Enabled = false;
+                        associatedPartList.Remove((Part)dataGridViewAddProductPartsAssociated.CurrentRow.DataBoundItem);
+
+                        if (dataGridViewAddProductPartsAssociated.CurrentRow == null)
+                        {
+                            ProductDeleteAssociatedPartBtn.Enabled = false;
+                        }
+                        else
+                        {
+                            ProductDeleteAssociatedPartBtn.Enabled = false;
+                        }
                     }
                     else
                     {
-                        ProductDeleteAssociatedPartBtn.Enabled = false;
+                        Console.WriteLine("Dont do anything");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Dont do anything");
-                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"Aan exception message: {exce.Message}");
+                Console.WriteLine($"Aan exception stack trace message: {exce.StackTrace}");
             }
         }
         private void ProductSaveBtn_Click(object sender, EventArgs e)
@@ -164,23 +188,31 @@ namespace WGU.SoftwareOne.Project.ViewModel
                 string productName = AddProductNameTextBox.Text;
                 int productInventory = int.Parse(AddProductInventoryTextBox.Text);
                 decimal productPrice = decimal.Parse(AddProductPriceTextBox.Text);
-                int addProductMax = int.Parse(AddProductMaxTextBox.Text);
-                int addProductMin = int.Parse(AddProductMinTextBox.Text);
+                int productMax = int.Parse(AddProductMaxTextBox.Text);
+                int productMin = int.Parse(AddProductMinTextBox.Text);
 
                 if (AddProductMaxTextBox != null && AddProductMinTextBox != null)
                 {
-                    if (addProductMax > 0 && addProductMin > 0)
+                    if (productMax > 0 && productMin > 0)
                     {
-                        if (addProductMin > addProductMax)
+                        if (productMin > productMax)
                         {
-                            string message = $"Minimum value '{addProductMin}' cannot be greater than the Maximum value '{addProductMax}'";
+                            string message = $"Minimum value '{productMin}' cannot be greater than the Minimum value '{productMax}'";
                             MessageBox.Show(message);
                             return;
                         }
                     }
                 }
 
-                Product productList = new Product(productId, productName, productInventory, productPrice, addProductMax, addProductMin);
+
+                if (productInventory < productMin || productInventory > productMax)
+                {
+                    MessageBox.Show($"Inventory value cannot be greater than the Maximum value " +
+                        $"nor less that Minimum value.");
+                    return;
+                }
+
+                Product productList = new Product(productId, productName, productInventory, productPrice, productMax, productMin);
                 Inventory.AddProduct(productList);
 
                 foreach (Part part in associatedPartList)
@@ -193,7 +225,8 @@ namespace WGU.SoftwareOne.Project.ViewModel
             }
             catch (Exception exce)
             {
-                Console.WriteLine($"Error message: {exce.Message}");
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
         #endregion

@@ -164,39 +164,54 @@ namespace WGU.SoftwareOne.Project.ViewModel
 
         private void AddPartSaveBtn_Click(object sender, EventArgs e)
         {
-            PartFormTextBoxValidation();
-
-            int partMax = int.Parse(AddPartMaxTextBox.Text);
-            int partMin = int.Parse(AddPartMinTextBox.Text);
-            int partId = Inventory.AllParts.Count + 1; ;
-            string partName = AddPartNameTextBox.Text;
-            int partInStock = int.Parse(AddPartInventoryTextBox.Text);
-            decimal partPrice = decimal.Parse(AddPartPriceTextBox.Text);
-
-            if (partMax < partMin)
+            try
             {
-                MessageBox.Show($"Maximum value '{partMax}' cannot be less than Minimum value '{partMin}'.");
-                return;
-            }
+                PartFormTextBoxValidation();
 
-            if (AddPartInHousedRadioBtn.Checked)
+                int partMax = int.Parse(AddPartMaxTextBox.Text);
+                int partMin = int.Parse(AddPartMinTextBox.Text);
+                int partId = Inventory.AllParts.Count + 1; ;
+                string partName = AddPartNameTextBox.Text;
+                int partInStock = int.Parse(AddPartInventoryTextBox.Text);
+                decimal partPrice = decimal.Parse(AddPartPriceTextBox.Text);
+
+                if (partMax < partMin)
+                {
+                    MessageBox.Show($"Maximum value '{partMax}' cannot be less than Minimum value '{partMin}'.");
+                    return;
+                }
+
+                if (partInStock < partMin || partInStock > partMax)
+                {
+                    MessageBox.Show($"Inventory value cannot be greater than the Maximum value " +
+                        $"nor less that Minimum value.");
+                    return;
+                }
+
+                if (AddPartInHousedRadioBtn.Checked)
+                {
+                    int partMachineId = int.Parse(AddPartDynamicTextBox.Text);
+
+                    InHouse inHousePart = new InHouse(partId, partName, partInStock, partPrice, partMax, partMin, partMachineId);
+                    int index = partId;
+                    Inventory.AddPart(index, inHousePart);
+                }
+                else
+                {
+                    string partCompanyName = AddPartDynamicTextBox.Text;
+                    Outsourced outsourcedPart = new Outsourced(partId, partName, partInStock, partPrice, partMax, partMin, partCompanyName);
+                    int index = partId;
+                    Inventory.AddPart(index, outsourcedPart);
+                }
+
+                this.Close();
+                new MainScreen("HomePage").Show();
+            }
+            catch (Exception exce)
             {
-                int partMachineId = int.Parse(AddPartDynamicTextBox.Text);
-
-                InHouse inHousePart = new InHouse(partId, partName, partInStock, partPrice, partMax, partMin, partMachineId);
-                int index = partId;
-                Inventory.AddPart(index, inHousePart);
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
-            else
-            {
-                string partCompanyName = AddPartDynamicTextBox.Text;
-                Outsourced outsourcedPart = new Outsourced(partId, partName, partInStock, partPrice, partMax, partMin, partCompanyName);
-                int index = partId;
-                Inventory.AddPart(index, outsourcedPart);
-            }
-
-            this.Close();
-            new MainScreen("HomePage").Show();
         }
         #endregion
     }

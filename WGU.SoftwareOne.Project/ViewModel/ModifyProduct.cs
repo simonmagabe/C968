@@ -130,18 +130,26 @@ namespace WGU.SoftwareOne.Project.ViewModel
         #region Button Clicks Event Listeners
         private void AddProductDeleteAssociatedPartBtn_Click(object sender, EventArgs e)
         {
-            if (partsAssociatedList.Count > 0)
+            try
             {
-                if (DialogResult.Yes == MessageBox.Show("Do You Want Delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                if (partsAssociatedList.Count > 0)
                 {
-                    partsAssociatedList.Remove((Part)dataGridViewModifyProductPartsAssociated.CurrentRow.DataBoundItem);
+                    if (DialogResult.Yes == MessageBox.Show("Do You Want Delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    {
+                        partsAssociatedList.Remove((Part)dataGridViewModifyProductPartsAssociated.CurrentRow.DataBoundItem);
 
-                    ModifyProductDeleteAssociatedPartBtn.Enabled = false;
+                        ModifyProductDeleteAssociatedPartBtn.Enabled = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The part was not deleted");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("The part was not deleted");
-                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception mesage: {exce.Message}");
+                Console.WriteLine($"An exception stack trace mesage: {exce.StackTrace}");
             }
         }
 
@@ -157,64 +165,95 @@ namespace WGU.SoftwareOne.Project.ViewModel
 
         private void ProductAddPartBtn_Click(object sender, EventArgs e)
         {
-            Part associatePart = (Part)dataGridViewModifyProductAllParts.CurrentRow.DataBoundItem;
-            partsAssociatedList.Add(associatePart);
+            try
+            {
+                Part associatePart = (Part)dataGridViewModifyProductAllParts.CurrentRow.DataBoundItem;
+                partsAssociatedList.Add(associatePart);
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
+            }
         }
         private void ModifyProductAllPartsSearchBtn_Click(object sender, EventArgs e)
         {
-            int searchId = int.Parse(ModifyProductAllPartsSearchTxtBox.Text);
-            Part findPart = Inventory.LookupPart(searchId);
-
-            foreach (DataGridViewRow item in dataGridViewModifyProductAllParts.Rows)
+            try
             {
-                Part part = (Part)item.DataBoundItem;
+                int searchId = int.Parse(ModifyProductAllPartsSearchTxtBox.Text);
+                Part findPart = Inventory.LookupPart(searchId);
 
-                if (part.ID.Equals(findPart.ID))
+                foreach (DataGridViewRow item in dataGridViewModifyProductAllParts.Rows)
                 {
-                    item.Selected = true;
-                    break;
+                    Part part = (Part)item.DataBoundItem;
+
+                    if (part.ID.Equals(findPart.ID))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                    else
+                    {
+                        item.Selected = false;
+                        MessageBox.Show($"No match for part with Id :'{searchId}'. Search again with a different Id!");
+                        return;
+                    }
                 }
-                else
-                {
-                    item.Selected = false;
-                    MessageBox.Show($"No match for part with Id :'{searchId}'. Search again with a different Id!");
-                    return;
-                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception message: {exce.StackTrace}");
             }
         }
 
         private void ProductSaveBtn_Click(object sender, EventArgs e)
         {
-            int productId = int.Parse(ModifyProductIDTextBox.Text);
-            string productName = ModifyProductNameTextBox.Text;
-            int productInStock = int.Parse(ModifyProductInventoryTextBox.Text);
-            decimal productPrice = decimal.Parse(ModifyProductPriceTextBox.Text);
-            int productMax = int.Parse(ModifyProductMaxTextBox.Text);
-            int productMin = int.Parse(ModifyProductMinTextBox.Text);
-
-            if (productMax < productMin)
+            try
             {
-                MessageBox.Show($"Maximum value '{productMax}' cannot be less than Minimum value '{productMin}'.");
-                return;
+                int productId = int.Parse(ModifyProductIDTextBox.Text);
+                string productName = ModifyProductNameTextBox.Text;
+                int productInventory = int.Parse(ModifyProductInventoryTextBox.Text);
+                decimal productPrice = decimal.Parse(ModifyProductPriceTextBox.Text);
+                int productMax = int.Parse(ModifyProductMaxTextBox.Text);
+                int productMin = int.Parse(ModifyProductMinTextBox.Text);
+
+                if (productMax < productMin)
+                {
+                    MessageBox.Show($"Maximum value '{productMax}' cannot be less than Minimum value '{productMin}'.");
+                    return;
+                }
+
+                if (productInventory < productMin || productInventory > productMax)
+                {
+                    MessageBox.Show($"Inventory value cannot be greater than the Maximum value " +
+                        $"nor less that Minimum value.");
+                    return;
+                }
+
+                Product alteredProduct = new Product(productId, productName, productInventory, productPrice, productMax, productMin);
+
+                foreach (Part part in partsAssociatedList)
+                {
+                    alteredProduct.AddAssociatedPart(part);
+                }
+
+                Inventory.UpdateProduct(productId, alteredProduct);
+                Close();
+                new MainScreen("HomePage").Show();
+
+                MainScreenPage.MainFormDefaultLoad();
+                MainScreenPage.productDataGridView.Update();
+                MainScreenPage.productDataGridView.Refresh();
+                MainScreenPage.ValidateRowIsSelectedOnPartGridView();
+                MainScreenPage.ValidateRowIsSelectedOnProductGridView();
+                MainScreenPage.DisableSearchButtonWhenSearchTextEmpty();
             }
-
-            Product alteredProduct = new Product(productId, productName, productInStock, productPrice, productMax, productMin);
-
-            foreach (Part part in partsAssociatedList)
+            catch (Exception ex)
             {
-                alteredProduct.AddAssociatedPart(part);
+                Console.WriteLine($"An exception message: {ex.Message}");
+                Console.WriteLine($"An exception stack trace message: {ex.StackTrace}");
             }
-
-            Inventory.UpdateProduct(productId, alteredProduct);
-            Close();
-            new MainScreen("HomePage").Show();
-
-            MainScreenPage.MainFormDefaultLoad();
-            MainScreenPage.productDataGridView.Update();
-            MainScreenPage.productDataGridView.Refresh();
-            MainScreenPage.ValidateRowIsSelectedOnPartGridView();
-            MainScreenPage.ValidateRowIsSelectedOnProductGridView();
-            MainScreenPage.DisableSearchButtonWhenSearchTextEmpty();
         }
 
         private void AddProductCancelBtn_Click(object sender, EventArgs e)

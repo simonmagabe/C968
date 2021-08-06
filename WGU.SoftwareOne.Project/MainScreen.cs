@@ -178,30 +178,46 @@ namespace WGU.SoftwareOne.Project
 
         private void PartModifyBtn_Click(object sender, EventArgs e)
         {
-            if (partDataGridView.CurrentRow.DataBoundItem.GetType() == typeof(InHouse))
+            try
             {
-                InHouse inHousePart = (InHouse)partDataGridView.CurrentRow.DataBoundItem;
-                ModifyPart modifyPart = new ModifyPart(inHousePart);
-                modifyPart.Show();
-                this.Hide();
+                if (partDataGridView.CurrentRow.DataBoundItem.GetType() == typeof(InHouse))
+                {
+                    InHouse inHousePart = (InHouse)partDataGridView.CurrentRow.DataBoundItem;
+                    ModifyPart modifyPart = new ModifyPart(inHousePart);
+                    modifyPart.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    Outsourced outsourcedPart = (Outsourced)partDataGridView.CurrentRow.DataBoundItem;
+                    ModifyPart modifyPartPage = new ModifyPart(outsourcedPart);
+                    modifyPartPage.Show();
+                    this.Hide();
+                }
             }
-            else
+            catch (Exception exce)
             {
-                Outsourced outsourcedPart = (Outsourced)partDataGridView.CurrentRow.DataBoundItem;
-                ModifyPart modifyPartPage = new ModifyPart(outsourcedPart);
-                modifyPartPage.Show();
-                this.Hide();
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
 
         private void PartDeleteBtn_Click(object sender, EventArgs e)
         {
-            if (Inventory.AllParts.Count != 0)
+            try
             {
-                if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                if (Inventory.AllParts.Count != 0)
                 {
-                    Inventory.AllParts.Remove((Part)partDataGridView.CurrentRow.DataBoundItem);
+                    if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected part?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    {
+                        Inventory.AllParts.Remove((Part)partDataGridView.CurrentRow.DataBoundItem);
+                    }
                 }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
         private void ProductModifyBtn_Click(object sender, EventArgs e)
@@ -213,60 +229,85 @@ namespace WGU.SoftwareOne.Project
 
         private void ProductDeleteBtn_Click(object sender, EventArgs e)
         {
-            Product product = (Product)productDataGridView.CurrentRow.DataBoundItem;
-            if (product.AssociatedParts.Count > 0)
+            try
             {
-                MessageBox.Show("A product with an Associated Part(s) cannot be deleted. /nDisassociate part(s) to be able to delete a product!");
-                return;
-            }
-
-            if (Inventory.AllProducts.Count > 0)
-            {
-                if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected product?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                Product product = (Product)productDataGridView.CurrentRow.DataBoundItem;
+                if (product.AssociatedParts.Count > 0)
                 {
-                    Inventory.AllProducts.Remove((Product)productDataGridView.CurrentRow.DataBoundItem);
+                    MessageBox.Show("A product with an Associated Part(s) cannot be deleted. " +
+                        "Disassociate part(s) to be able to delete a product!");
+                    return;
                 }
+
+                if (Inventory.AllProducts.Count > 0)
+                {
+                    if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected product?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    {
+                        Inventory.AllProducts.Remove((Product)productDataGridView.CurrentRow.DataBoundItem);
+                    }
+                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
 
         private void PartSearchBtn_Click(object sender, EventArgs e)
         {
-            int partSearchId = int.Parse(partSearchTextBox.Text);
-
-            Part findPart = Inventory.LookupPart(partSearchId);
-
-            foreach (DataGridViewRow item in partDataGridView.Rows)
+            try
             {
-                Part part = (Part)item.DataBoundItem;
-                if (part.ID.Equals(findPart.ID))
+                int partSearchId = int.Parse(partSearchTextBox.Text);
+
+                Part findPart = Inventory.LookupPart(partSearchId);
+
+                foreach (DataGridViewRow item in partDataGridView.Rows)
                 {
-                    item.Selected = true;
-                    break;
+                    Part part = (Part)item.DataBoundItem;
+                    if (part.ID.Equals(findPart.ID))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                    else
+                    {
+                        item.Selected = false;
+                    }
                 }
-                else
-                {
-                    item.Selected = false;
-                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
         private void ProductSearchBtn_Click(object sender, EventArgs e)
         {
-            int productSearchId = int.Parse(productSearchTextBox.Text);
-            Product findProduct = Inventory.LookupProduct(productSearchId);
-
-            foreach (DataGridViewRow item in productDataGridView.Rows)
+            try
             {
-                Product product = (Product)item.DataBoundItem;
-                if (product.ProductID.Equals(findProduct.ProductID))
+                int productSearchId = int.Parse(productSearchTextBox.Text);
+                Product findProduct = Inventory.LookupProduct(productSearchId);
+
+                foreach (DataGridViewRow item in productDataGridView.Rows)
                 {
-                    item.Selected = true;
-                    break;
+                    Product product = (Product)item.DataBoundItem;
+                    if (product.ProductID.Equals(findProduct.ProductID))
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                    else
+                    {
+                        item.Selected = false;
+                    }
                 }
-                else
-                {
-                    item.Selected = false;
-                }
+            }
+            catch (Exception exce)
+            {
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
         #endregion
