@@ -213,6 +213,13 @@ namespace WGU.SoftwareOne.Project
 
         private void ProductDeleteBtn_Click(object sender, EventArgs e)
         {
+            Product product = (Product)productDataGridView.CurrentRow.DataBoundItem;
+            if (product.AssociatedParts.Count > 0)
+            {
+                MessageBox.Show("A product with an Associated Part(s) cannot be deleted. /nDisassociate part(s) to be able to delete a product!");
+                return;
+            }
+
             if (Inventory.AllProducts.Count > 0)
             {
                 if (DialogResult.Yes == MessageBox.Show("Do you want to delete selected product?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
