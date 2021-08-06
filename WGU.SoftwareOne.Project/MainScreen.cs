@@ -235,7 +235,7 @@ namespace WGU.SoftwareOne.Project
                 if (product.AssociatedParts.Count > 0)
                 {
                     MessageBox.Show("A product with an Associated Part(s) cannot be deleted. " +
-                        "Disassociate part(s) to be able to delete a product!");
+                        "Disassociate part(s) from the product in order to delete a product!");
                     return;
                 }
 
