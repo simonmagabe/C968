@@ -276,10 +276,10 @@ namespace WGU.SoftwareOne.Project
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exce)
             {
-
-                throw;
+                Console.WriteLine($"An exception message: {exce.Message}");
+                Console.WriteLine($"An exception stack trace message: {exce.StackTrace}");
             }
         }
 
